@@ -5,12 +5,12 @@ using UnityEngine;
 public class TriggerArea : MonoBehaviour
 {
     public Animator anim;
-    public GameObject door;
     public bool isOpen = false;
+    public GameObject Door;
 
      void Start()
     {
-        anim = door.GetComponent<Animator>();
+        anim = Door.GetComponent<Animator>();
     }
       void OnTriggerEnter(Collider other)
     {

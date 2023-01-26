@@ -16,10 +16,11 @@ public class EndTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
+        _soundScript.playWinSound();
         if (collision.gameObject.tag == "Player")
         {
             SceneManager.LoadScene("Level 2");
-            _soundScript.playWinSound();
+            
         }
     }
 }

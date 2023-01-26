@@ -67,6 +67,10 @@ ProjectSettings
 Unity Store
 Unity Store Prefabs
 Mirror
+3rd Party
+UserSettings
+obj/Debug
+
 
 #Corresponing META files
 Assets/Graphics.meta

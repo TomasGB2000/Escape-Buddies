@@ -1,78 +1,77 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-	PlayerInput playerInput;
-	Vector2 move;
-	Vector2 rotate;
-	float run;
-	float jumpStarted;
-	public float walkSpeed = 5f;
-	public float runSpeed = 10f;
-	public Camera playerCamera;
-	Vector3 CameraRotation;
 
-	private void OnEnable()
-	{
-		playerInput.Player.Enable();
-	}
+    public CharacterController controller;
 
-	private void OnDisable()
-	{
-		playerInput.Player.Enable();
-	}
+    public float speed = 10f;
+    public float gravity = -9.81f;
+    public float jumpHeight = 5f;
 
-	private void Awake()
-	{
-		playerInput = new PlayerInput();
+    public float health = 150f;
+    public float amount = 10f; 
 
-		playerInput.Player.Jump.performed += ctx => Jump();
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
 
-		playerInput.Player.Run.performed += ctx => run = runSpeed;
-		playerInput.Player.Run.canceled += ctx => run = walkSpeed;
+    Vector3 velocity;
+    bool isGrounded;
 
-		playerInput.Player.Move.performed += ctx => move = ctx.ReadValue<Vector2>();
-		playerInput.Player.Move.canceled += ctx => move = Vector2.zero;
 
-		playerInput.Player.Look.performed += ctx => rotate = ctx.ReadValue<Vector2>();
-		playerInput.Player.Look.canceled += ctx => rotate = Vector2.zero;
-	}
-
-	private void Jump()
-    {
-		if(jumpStarted +1f < Time.time)
-        {
-			jumpStarted = Time.time;
-        }
-    }
-
-    void Start()
-    {
-		run = walkSpeed;
-		CameraRotation = new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z);
-		jumpStarted = -1f;
-		Cursor.lockState = CursorLockMode.Locked;
-    }
     void Update()
     {
-		CameraRotation = new Vector3(CameraRotation.x + rotate.y, CameraRotation.y + rotate.x, CameraRotation.z);
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-		playerCamera.transform.eulerAngles = CameraRotation;
-		transform.eulerAngles = new Vector3(transform.rotation.x, CameraRotation.y, transform.rotation.z);
-
-		transform.Translate(Vector3.right * Time.deltaTime * move.x * run, Space.Self);
-		transform.Translate(Vector3.forward * Time.deltaTime * move.y * run, Space.Self);
-
-		if(jumpStarted + 0.5f > Time.time)
+        if (isGrounded && velocity.y < 0)
         {
-			transform.Translate((Vector3.up * 8f * Time.deltaTime), Space.Self);
+            velocity.y = -5f;
         }
-		else if(jumpStarted + 1f > Time.time)
+
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        Vector3 move = transform.right * x + transform.forward * z;
+
+        controller.Move(move * speed * Time.deltaTime);
+
+        if(Input.GetButtonDown("Jump") && isGrounded)
         {
-			transform.Translate((Vector3.up * -8f * Time.deltaTime), Space.Self);
-		}
-	}
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(velocity * Time.deltaTime);
+
+
+    }
+
+ 
+
+    /* private void OnCollisionEnter(Collision enemy)
+     {
+         TakeDamage();
+     }
+
+     public void TakeDamage()
+     {
+         health -= amount;
+         if (health <= 0f)
+         {
+             Debug.Log("Dead!");
+         }
+
+     }
+    */
 }
+
+
+
+
+
+
+

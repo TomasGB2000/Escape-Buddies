@@ -19,6 +19,7 @@ public class EndTrigger2 : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
             SceneManager.LoadScene("Credits");
             _soundScript.playWinSound();
             

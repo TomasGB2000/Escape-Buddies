@@ -7,12 +7,14 @@ using Mirror;
 
 public class PlayerController : NetworkBehaviour
 {
+    [SerializeField] private AudioSource jumpSoundEffect;
+
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
     public Camera playerCamera;
-    public float lookSpeed = 2.0f;
+    public float lookSpeed = 1.5f;
     public float lookXLimit = 45.0f;
     public int maxJumps = 2;
     public int JumpsRemaining = 0;
@@ -21,6 +23,8 @@ public class PlayerController : NetworkBehaviour
     public int maxJumpCount = 2;
     public int jumpRemaining = 0;
     public Animator anim;
+
+    public float speed = 10f; 
 
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
@@ -47,6 +51,8 @@ public class PlayerController : NetworkBehaviour
 
     }
 
+    
+
     void Update()
     {
         if (!isLocalPlayer)
@@ -68,6 +74,7 @@ public class PlayerController : NetworkBehaviour
         {
             moveDirection.y = jumpSpeed;
             JumpsRemaining -= 1;
+            jumpSoundEffect.Play();
         }
         else
         {
@@ -95,4 +102,19 @@ public class PlayerController : NetworkBehaviour
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
     }
+
+
+    //let's try to get this player up a wall.
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Wall")
+        {
+            if (Input.GetButtonDown("Jump"))
+            transform.position += transform.up * speed * Time.deltaTime;
+        }
+
+    }
+
+    //well this didnt work.
+
 }

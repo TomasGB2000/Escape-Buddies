@@ -5,14 +5,14 @@ using UnityEngine;
 public class TriggerArea4 : MonoBehaviour
 {
     public Animator anim;
-    public GameObject door;
     public bool isRising = false;
+    public GameObject Door;
 
     void Start()
     {
-        anim = door.GetComponent<Animator>();
+        anim = Door.GetComponent<Animator>();
     }
-        void OnTriggerEnter(Collider other)
+      void OnTriggerEnter(Collider other)
     {
        if (other.gameObject.tag == "Player" && isRising == false)
             {
